@@ -16,10 +16,16 @@ func (c *Counter) Inc() {
 	c.mx.Unlock()
 }
 
+func (c *Counter) Value() int {
+	c.mx.RLock()
+	defer c.mx.RUnlock()
+	return c.counter
+}
+
 func main() {
 	c := Counter{}
 	var wg sync.WaitGroup
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 1000; i++ {
 		wg.Add(1)
 		go func() {
 			for j := 0; j < 1000; j++ {
@@ -28,6 +34,6 @@ func main() {
 			wg.Done()
 		}()
 	}
-	wg.Wait()
-	fmt.Println(c.counter)
+	wg.Wait() // Waiting for all goroutines to finish
+	fmt.Println(c.Value())
 }
