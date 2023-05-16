@@ -1,5 +1,10 @@
 package main
 
+/*
+	Дана последовательность чисел: 2,4,6,8,10.
+	Найти сумму их квадратов(2^2+3^2+4^2….) с использованием конкурентных вычислений.
+*/
+
 import (
 	"fmt"
 	"sync"
@@ -36,7 +41,8 @@ func calcSum2(nums []int) {
 	for _, n := range nums {
 		ch <- n
 	}
-	// Run goroutines
+	// Run goroutines (any amount of them)
+	go calcSquaresFromChannel(ch, dest)
 	go calcSquaresFromChannel(ch, dest)
 	go calcSquaresFromChannel(ch, dest)
 

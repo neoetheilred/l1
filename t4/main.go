@@ -1,5 +1,14 @@
 package main
 
+/*
+	Реализовать постоянную запись данных в канал (главный поток).
+	Реализовать набор из N воркеров, которые читают произвольные данные из канала и выводят в stdout.
+	Необходима возможность выбора количества воркеров при старте.
+
+	Программа должна завершаться по нажатию Ctrl+C.
+	Выбрать и обосновать способ завершения работы всех воркеров.
+*/
+
 import (
 	"fmt"
 	"log"
@@ -33,7 +42,8 @@ func generateData(ch chan<- interface{}) {
 	for {
 		select {
 		case <-intChan:
-			close(ch)
+			fmt.Println("CTRL+C")
+			close(ch) // Ends all workers
 			return
 		default:
 			ch <- "hello"
@@ -44,7 +54,7 @@ func generateData(ch chan<- interface{}) {
 
 // Reads data from channel and prints to stdout
 func worker(ch <-chan interface{}, order int) {
-	for c := range ch {
+	for c := range ch { // while ch is open receives data
 		fmt.Printf("[worker %d]: %v\n", order, c)
 	}
 }

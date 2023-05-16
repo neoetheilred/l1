@@ -1,5 +1,9 @@
 package main
 
+/*
+	Реализовать структуру-счетчик, которая будет инкрементироваться в конкурентной среде. По завершению программа должна выводить итоговое значение счетчика.
+*/
+
 import (
 	"fmt"
 	"sync"
@@ -24,16 +28,16 @@ func (c *Counter) Value() int {
 
 func main() {
 	c := Counter{}
-	var wg sync.WaitGroup
+	var wg sync.WaitGroup // Use waitgroup to sync goroutines
 	for i := 0; i < 1000; i++ {
 		wg.Add(1)
 		go func() {
-			for j := 0; j < 1000; j++ {
+			for j := 0; j < 1000; j++ { // Increment counter many times
 				c.Inc()
 			}
 			wg.Done()
 		}()
 	}
-	wg.Wait() // Waiting for all goroutines to finish
-	fmt.Println(c.Value())
+	wg.Wait()              // Waiting for all goroutines to finish
+	fmt.Println(c.Value()) // want to see 1000000
 }

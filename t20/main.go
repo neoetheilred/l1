@@ -1,5 +1,10 @@
 package main
 
+/*
+	Разработать программу, которая переворачивает слова в строке.
+	Пример: «snow dog sun — sun dog snow».
+*/
+
 import (
 	"bufio"
 	"fmt"
@@ -7,13 +12,6 @@ import (
 )
 
 func main() {
-	// reader := bufio.NewReader(os.Stdin)
-	// s, err := reader.ReadString('\n')
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// fmt.Println(strings.Trim(s, "\n"))
-	// fmt.Println(split(strings.Trim(s, "\n"), ' '))
 	var s string
 	scanner := bufio.NewScanner(os.Stdin)
 	if scanner.Scan() {

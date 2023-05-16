@@ -1,5 +1,9 @@
 package main
 
+/*
+	Реализовать паттерн «адаптер» на любом примере.
+*/
+
 import (
 	"encoding/json"
 	"fmt"
@@ -54,7 +58,7 @@ func NewJsonToArticleAdapter() *JsonToArticleAdapter {
 }
 
 func (jAdapter *JsonToArticleAdapter) GetRandomArticle() (*Article, error) {
-	jsonString, err := jAdapter.articleService.GetArticleJSON(10000 + rand.Intn(1000))
+	jsonString, err := jAdapter.articleService.GetArticleJSON(13000 + rand.Intn(1000))
 	if err != nil {
 		return nil, err
 	}

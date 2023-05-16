@@ -1,10 +1,17 @@
 package main
 
+/*
+	Разработать программу, которая будет последовательно отправлять значения в канал,
+	а с другой стороны канала — читать.
+	По истечению N секунд программа должна завершаться.
+*/
+
 import (
 	"fmt"
 	"log"
 	"os"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -13,20 +20,28 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	ch := make(chan interface{})        // channel, used to interact between writer and reader
-	interrupt := make(chan struct{}, 2) // We need to stop 2 goroutines, so we use chan with buffer of 2
+	ch := make(chan interface{})     // channel, used to interact between writer and reader
+	interrupt := make(chan struct{}) // Channel used to stop goroutines
+	var wg sync.WaitGroup
+	wg.Add(2)
 	// Run goroutines
-	go writer(ch, interrupt)
-	go reader(ch, interrupt)
-	time.Sleep(time.Duration(n) * time.Second)
-	interrupt <- struct{}{}
-	interrupt <- struct{}{}
-	time.Sleep(100 * time.Millisecond)
+	go func() {
+		writer(ch, interrupt)
+		fmt.Println("Writer exits")
+		wg.Done()
+	}()
+	go func() {
+		reader(ch, interrupt)
+		fmt.Println("Reader exits")
+		wg.Done()
+	}()
+	time.Sleep(time.Duration(n) * time.Second) // Sleep N seconds
+	close(interrupt)                           // When channel is closed, all goroutines are ended
+	wg.Wait()
 }
 
 // Continiously writes data to channel
 func writer(ch chan<- interface{}, interrupt <-chan struct{}) {
-	defer fmt.Println("Writer exits")
 	for {
 		select {
 		case <-interrupt: // Stop execution when smth is sent to interrupt channel
@@ -40,7 +55,6 @@ func writer(ch chan<- interface{}, interrupt <-chan struct{}) {
 
 // Reads from channel, interrupts when interrupt channel receives data
 func reader(ch <-chan interface{}, interrupt <-chan struct{}) {
-	defer fmt.Println("Reader exits")
 	for {
 		select {
 		case c := <-ch:

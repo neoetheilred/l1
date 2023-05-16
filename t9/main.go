@@ -2,6 +2,12 @@ package main
 
 import "fmt"
 
+/*
+	Разработать конвейер чисел.
+	Даны два канала: в первый пишутся числа (x) из массива, во второй — результат операции x*2,
+	после чего данные из второго канала должны выводиться в stdout.
+*/
+
 func main() {
 	in := make(chan int)         // Channel to send numbers to
 	out := make(chan int)        // Channels to read proccessed numbers from
